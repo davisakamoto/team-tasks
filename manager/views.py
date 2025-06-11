@@ -1,5 +1,5 @@
 from django.views.generic import View
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 
 from .models import Task, Category, Person
@@ -35,7 +35,8 @@ class CreatePerson(View):
     def get(self, request):
         form = PersonForm()
         data = {
-            "form": form
+            "form": form,
+            "edit": False
         }
         return render(request, self.template_name, data)
     
@@ -45,3 +46,29 @@ class CreatePerson(View):
             form.save()
             return redirect('manager:manager')
         return render(request)
+    
+class EditPerson(View):
+    template_name = "manager/createPerson.html"
+
+    def get(self, request, pk):
+        person = get_object_or_404(Person, pk=pk)
+        form = PersonForm(instance=person)
+        data = {
+            "form": form,
+            "edit": True,
+            "person_id": person.id
+        }
+        return render(request, self.template_name, data)
+
+    def post(self, request, pk):
+        person = get_object_or_404(Person, pk=pk)
+        form = PersonForm(request.POST, instance=person)
+        data = {
+            "form": form,
+            "edit": True,
+            "person_id": person.id
+        }
+        if form.is_valid():
+            form.save()
+            return redirect('manager:manager')
+        return render(request, self.template_name, data)
