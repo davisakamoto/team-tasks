@@ -2,8 +2,8 @@ from django.views.generic import View
 from django.shortcuts import render
 from django.http import HttpResponse
 
-from .models import Task, Category
-from .forms import TaskForm
+from .models import Task, Category, Person
+from .forms import TaskForm, PersonForm
 
 class Manager(View):
     def get(self, request):
@@ -39,3 +39,13 @@ class Manager(View):
     
     def post(self, request):
         return self.get(request)
+    
+class CreatePerson(View):
+    template_name = "manager/createPerson.html"
+    def get(self, request):
+        form = PersonForm()
+        data = {
+            "form": form
+        }
+        return render(request, self.template_name, data)
+    

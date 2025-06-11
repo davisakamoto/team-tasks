@@ -1,5 +1,5 @@
 from django import forms
-from .models import Task, Category
+from .models import Task, Category, Person
 
 class TaskForm(forms.ModelForm):
     class Meta:
@@ -19,4 +19,15 @@ class CategoryForm(forms.ModelForm):
         fields = ['name']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+class PersonForm(forms.ModelForm):
+    class Meta: 
+        model = Person
+        fields = ['name', 'email', 'role', 'joinedAt']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.TextInput(attrs={'class': 'form-control'}),
+            'role': forms.TextInput(attrs={'class': 'form-control'}), 
+            'joinedAt': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
         }
