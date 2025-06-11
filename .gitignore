@@ -1,0 +1,34 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+
+# Caches e logs do Django
+*.log
+
+# Diretórios de banco de dados SQLite
+*.sqlite3
+
+# Ambiente virtual (virtualenv, venv, pipenv)
+venv/
+env/
+ENV/
+.env/
+.venv/
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos de configurações do editor (opcional, ajustar conforme seu uso)
+.vscode/
+.idea/
+
+# Arquivos de cache do pytest, tox, coverage, etc.
+.coverage
+.tox/
+.cache/
+.pytest_cache/
+
+# Arquivos temporários do Python
+*.swp
+*.swo
