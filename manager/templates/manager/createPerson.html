@@ -14,7 +14,8 @@
                 </h4>
             </div>
             <div class="card-body">
-                <form method="POST">
+
+                <form id="person-form" method="POST">
                     {% csrf_token %}
                     {{ form.non_field_errors }}
                     
@@ -29,12 +30,31 @@
                             {% endif %}
                         </div>
                     {% endfor %}
-                    
-                    <button type="submit" class="btn {% if edit %}btn-warning{% else %}btn-primary{% endif %}">
-                        {% if edit %}Update{% else %}Save{% endif %}
-                    </button>
-                    <a href="{% url 'manager:manager' %}" class="btn btn-secondary">Cancel</a>
                 </form>
+
+                {% if edit %}
+                    <form id="delete-form" method="POST" action="{% url 'manager:deletePerson' person_id %}">
+                        {% csrf_token %}
+                    </form>
+                {% endif %}
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <div>
+                        <button type="submit" form="person-form" class="btn {% if edit %}btn-warning{% else %}btn-primary{% endif %}">
+                            {% if edit %}Update{% else %}Save{% endif %}
+                        </button>
+                        <a href="{% url 'manager:manager' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                    
+                    {% if edit %}
+                        <div>
+                            <button type="submit" form="delete-form" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this person?');">
+                                Delete
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+
             </div>
         </div>
     </div>

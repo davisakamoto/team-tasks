@@ -72,3 +72,10 @@ class EditPerson(View):
             form.save()
             return redirect('manager:manager')
         return render(request, self.template_name, data)
+
+
+class DeletePerson(View):
+    def post(self, request, pk):
+        person = get_object_or_404(Person, pk=pk)
+        person.delete()
+        return redirect('manager:manager')
