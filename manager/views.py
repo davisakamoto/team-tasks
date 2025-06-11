@@ -7,33 +7,22 @@ from .forms import TaskForm, PersonForm
 
 class Manager(View):
     def get(self, request):
+        search_query = request.GET.get("search", "")
+        if search_query:
+            members = Person.objects.filter(name__icontains=search_query)
+        else:
+            members = Person.objects.all()
+        
         tasks = Task.objects.all()
         categories = Category.objects.all()
-
         form = TaskForm()
 
         data = {
             "form": form,
             "categories": categories,
             "tasks": tasks,
-            "members": Person.objects.all()
-            # "members": [
-            #     {
-            #         "name": "Arthur Carvalho",
-            #         "role": "Desenvolvedor Front-End",
-            #         "picture": None
-            #     },
-            #     {
-            #         "name": "Davi Carvalho",
-            #         "role": "Desenvolvedor Back-End",
-            #         "picture": None
-            #     },
-            #     {
-            #         "name": "Davi Sakamoto",
-            #         "role": "Tech Lead",
-            #         "picture": None
-            #     }
-            # ]
+            "members": members,
+            "search_query": search_query
         }
 
         return render(request, 'manager/manager.html', data)
