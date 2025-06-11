@@ -46,9 +46,10 @@ class CreatePerson(View):
     def get(self, request):
         form = PersonForm()
         data = {
-            "form": form
+            "form": form,
+            "edit": False
         }
-        return render(request, self.template_name, {"form": form, "edit": False})
+        return render(request, self.template_name, data)
     
     def post(self, request): 
         form = PersonForm(request.POST)
@@ -63,12 +64,22 @@ class EditPerson(View):
     def get(self, request, pk):
         person = get_object_or_404(Person, pk=pk)
         form = PersonForm(instance=person)
-        return render(request, self.template_name, {"form": form, "edit": True, "person_id": person.id})
+        data = {
+            "form": form,
+            "edit": True,
+            "person_id": person.id
+        }
+        return render(request, self.template_name, data)
 
     def post(self, request, pk):
         person = get_object_or_404(Person, pk=pk)
         form = PersonForm(request.POST, instance=person)
+        data = {
+            "form": form,
+            "edit": True,
+            "person_id": person.id
+        }
         if form.is_valid():
             form.save()
             return redirect('manager:manager')
-        return render(request, self.template_name, {"form": form, "edit": True, "person_id": person.id})
+        return render(request, self.template_name, data)
