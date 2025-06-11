@@ -1,5 +1,5 @@
 from django.views.generic import View
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
 from .models import Task, Category, Person
@@ -16,23 +16,24 @@ class Manager(View):
             "form": form,
             "categories": categories,
             "tasks": tasks,
-            "members": [
-                {
-                    "name": "Arthur Carvalho",
-                    "role": "Desenvolvedor Front-End",
-                    "picture": None
-                },
-                {
-                    "name": "Davi Carvalho",
-                    "role": "Desenvolvedor Back-End",
-                    "picture": None
-                },
-                {
-                    "name": "Davi Sakamoto",
-                    "role": "Tech Lead",
-                    "picture": None
-                }
-            ]
+            "members": Person.objects.all()
+            # "members": [
+            #     {
+            #         "name": "Arthur Carvalho",
+            #         "role": "Desenvolvedor Front-End",
+            #         "picture": None
+            #     },
+            #     {
+            #         "name": "Davi Carvalho",
+            #         "role": "Desenvolvedor Back-End",
+            #         "picture": None
+            #     },
+            #     {
+            #         "name": "Davi Sakamoto",
+            #         "role": "Tech Lead",
+            #         "picture": None
+            #     }
+            # ]
         }
 
         return render(request, 'manager/manager.html', data)
@@ -49,3 +50,9 @@ class CreatePerson(View):
         }
         return render(request, self.template_name, data)
     
+    def post(self, request): 
+        form = PersonForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('manager:manager')
+        return render(request)
