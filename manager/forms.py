@@ -4,12 +4,12 @@ from .models import Task, Category, Person
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['title', 'description', 'categoryId', 'personId', 'done', 'deadline']
+        fields = ['title', 'description', 'category', 'person', 'done', 'deadline']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'categoryId': forms.Select(attrs={'class': 'form-select'}),
-            'personId': forms.Select(attrs={'class': 'form-select'}),
+            'category': forms.Select(attrs={'class': 'form-select'}),
+            'person': forms.Select(attrs={'class': 'form-select'}),
             'done': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'deadline': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }
