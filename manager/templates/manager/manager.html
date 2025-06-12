@@ -98,14 +98,22 @@
         {% endif %}
         <div class="p-8 flex flex-1 items-start overflow-auto">
           <div class="flex-shrink-0 text-sm sticky top-0">
-            <div class="flex items-center {% if taskStatus != None %} text-indigo-300 {% endif %} mb-3" onclick="addOrUpdateParam('task', '')" style="cursor: pointer;">
-              All <span class="italic text-sm ml-1">({{lenAll}})</span></div>
-            <div class="flex items-center {% if taskStatus != 'todo' %} text-indigo-300 {% endif %} mb-3" onclick="addOrUpdateParam('task', 'todo')" style="cursor: pointer;">
-              Pending <span class="italic text-sm ml-1">({{lenTodo}})</span></div>
-            <div class="flex items-center {% if taskStatus != 'late' %} text-indigo-300 {% endif %} mb-3" onclick="addOrUpdateParam('task', 'late')" style="cursor: pointer;">
-              Late <span class="italic text-sm ml-1">({{lenLate}})</span></div>
-            <div class="flex items-center {% if taskStatus != 'done' %} text-indigo-300 {% endif %} mb-3" onclick="addOrUpdateParam('task', 'done')" style="cursor: pointer;">
-              Done <span class="italic text-sm ml-1">({{lenDone}})</span></div>
+            <div onclick="addOrUpdateParam('task', '')" 
+                class="flex items-center mb-3 cursor-pointer {% if not task_status or task_status == '' %}text-white font-bold{% else %}text-indigo-300 hover:text-white{% endif %}">
+              All <span class="italic text-sm ml-1">({{lenAll}})</span>
+            </div>
+            <div onclick="addOrUpdateParam('task', 'todo')" 
+                class="flex items-center mb-3 cursor-pointer {% if task_status == 'todo' %}text-white font-bold{% else %}text-indigo-300 hover:text-white{% endif %}">
+              Pending <span class="italic text-sm ml-1">({{lenTodo}})</span>
+            </div>
+            <div onclick="addOrUpdateParam('task', 'late')" 
+                class="flex items-center mb-3 cursor-pointer {% if task_status == 'late' %}text-white font-bold{% else %}text-indigo-300 hover:text-white{% endif %}">
+              Late <span class="italic text-sm ml-1">({{lenLate}})</span>
+            </div>
+            <div onclick="addOrUpdateParam('task', 'done')" 
+                class="flex items-center mb-3 cursor-pointer {% if task_status == 'done' %}text-white font-bold{% else %}text-indigo-300 hover:text-white{% endif %}">
+              Done <span class="italic text-sm ml-1">({{lenDone}})</span>
+            </div>
           </div>
           <div class="flex-1 pl-10">
             {% for task in tasks %}
