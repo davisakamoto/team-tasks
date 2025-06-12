@@ -67,6 +67,7 @@ class Manager(View):
     
 class CreatePerson(View):
     template_name = "manager/person.html"
+
     def get(self, request):
         form = PersonForm()
         data = {
@@ -120,5 +121,35 @@ class EditPerson(View):
 class DeletePerson(View):
     def post(self, request, pk):
         person = get_object_or_404(Person, pk=pk)
+        person.delete()
+        return redirect('manager:manager')
+
+ 
+class CreateTask(View):
+    template_name = "manager/task.html"
+
+    def get(self, request):
+        form = TaskForm()
+        data = {
+            "form": form,
+            "edit": False
+        }
+        return render(request, self.template_name, data)
+    
+    def post(self, request):
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('manager:manager')
+        return render(request)
+
+    
+class EditTask(View):
+    template_name = "manager/person.html"
+
+
+class DeleteTask(View):
+    def post(self, request, pk):
+        person = get_object_or_404(Task, pk=pk)
         person.delete()
         return redirect('manager:manager')

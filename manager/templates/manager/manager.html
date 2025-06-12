@@ -84,7 +84,7 @@
               <h2 class="text-indigo-400 text-sm">{{member_selected.role}}</h2>
             </div>
             <button onclick="addOrUpdateParam('member', '')" class="bg-indigo-600 text-white py-2 text-sm px-3 rounded focus:outline-none">See All</button>
-            <button class="bg-indigo-600 text-white py-2 text-sm px-3 rounded focus:outline-none ml-3">New Task</button>
+            <a href="{% url 'manager:createTask' %}" class="bg-indigo-600 text-white py-2 text-sm px-3 rounded focus:outline-none ml-3">New Task</a>
           </div>
         {% else %}
           <div class="p-8 bg-indigo-700 flex items-center">
@@ -93,7 +93,7 @@
               <h1 class="text-xl leading-none mb-1">All Tasks</h1>
               <h2 class="text-indigo-400 text-sm">Select a member on the left panel to filter.</h2>
             </div>
-            <button class="bg-indigo-600 text-white py-2 text-sm px-3 rounded focus:outline-none">New Task</button>
+            <a href="{% url 'manager:createTask' %}" class="bg-indigo-600 text-white py-2 text-sm px-3 rounded focus:outline-none">New Task</a>
           </div>
         {% endif %}
         <div class="p-8 flex flex-1 items-start overflow-auto">
