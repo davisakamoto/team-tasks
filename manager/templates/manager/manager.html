@@ -7,6 +7,15 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
+
+<script>
+  function addOrUpdateParam(key, value) {
+    const url = new URL(window.location);
+    url.searchParams.set(key, value);
+    window.location.href = url.toString();
+  }
+</script>
+
 <body class="relative bg-indigo-400 h-screen overflow-hidden">
 
   <div class="h-screen w-screen bg-indigo-400 overflow-hidden absolute flex items-center">
@@ -34,52 +43,69 @@
               <form id="searchForm" method="get" class="h-full">
                 <input placeholder="Search members" name="search" value="{{search_query}}" onchange="document.getElementById('searchForm').submit();"
                   type="text" class="w-full border rounded border-gray-400 h-full focus:outline-none pl-4 pr-8 text-gray-700 text-sm text-gray-500">
-                <svg stroke="currentColor" class="w-4 h-4 absolute right-0 top-0 mt-3 mr-2 text-gray-500" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <svg stroke="currentColor" class="w-4 h-5 absolute right-0 top-0 mt-2 mr-2 text-gray-500" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                   <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
                 </svg>
               </form>
             </div>
-            <a href="createPerson/" class="bg-indigo-500 text-white py-2 text-sm px-3 rounded focus:outline-none ml-4 inline-block">Add Member</a>
+            <a href="{% url 'manager:createPerson' %}" class="bg-indigo-500 text-white py-2 text-sm px-3 rounded focus:outline-none ml-4 inline-block">Add Member</a>
           </div>
         </div>
 
         {% comment %} MEMBERS LIST {% endcomment %}
         <div class="overflow-auto flex-grow">
           {% for member in members %}
-          <div class="bg-gray-100 px-8 py-6 flex items-center border-b border-gray-300">
-            <div class="flex ml-4">
-              <img src="https://cdn-icons-png.freepik.com/512/3626/3626507.png" class="w-10 h-10 object-cover rounded object-top" />
-              <div class="flex flex-col pl-4">
-                <h2 class="font-medium text-sm">{{member.name}}</h2>
-                <h3 class="text-gray-500 text-sm">{{member.role}}</h3>
+            <div class="{% if member_selected.id == member.id %} bg-gray-200 {% else %} bg-gray-100 {% endif %} px-8 py-6 flex items-center border-b border-gray-300"
+              onclick="addOrUpdateParam('member', {{member.id}})" style="cursor: pointer;">
+              <div class="flex ml-4">
+                <img src="https://cdn-icons-png.freepik.com/512/3626/3626507.png" class="w-10 h-10 object-cover rounded object-top" />
+                <div class="flex flex-col pl-4">
+                  <h2 class="font-medium text-sm">{{member.name}}</h2>
+                  <h3 class="text-gray-500 text-sm">{{member.role}}</h3>
+                </div>
               </div>
+              <a href="{% url 'manager:editPerson' member.id %}" class="text-gray-500 flex items-center text-sm focus:outline-none rounded ml-auto py-2 leading-none">
+                  <svg stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+                  </svg>
+                  Edit
+                </a>
             </div>
-            <a href="{% url 'manager:editPerson' member.id %}" class="text-gray-500 flex items-center text-sm focus:outline-none rounded ml-auto py-2 leading-none">
-                <svg stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-2" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="3"/>
-                  <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
-                </svg>
-                Edit
-              </a>
-          </div>
           {% endfor %}
         </div>
       </div>
       <div class="lg:w-1/2 bg-indigo-600 text-white flex flex-col">
-        <div class="p-8 bg-indigo-700 flex items-center">
-          <img src="https://cdn-icons-png.freepik.com/512/3626/3626507.png" class="w-16 h-16 mr-4 object-top object-cover rounded" />
-          <div class="mr-auto">
-            <h1 class="text-xl leading-none mb-1">Davi Carvalho</h1>
-            <h2 class="text-indigo-400 text-sm">Desenvolvedor Back-End</h2>
+        {% if member_selected %}
+          <div class="p-8 bg-indigo-700 flex items-center">
+            <img src="https://cdn-icons-png.freepik.com/512/3626/3626507.png" class="w-16 h-16 mr-4 object-top object-cover rounded" />
+            <div class="mr-auto">
+              <h1 class="text-xl leading-none mb-1">{{member_selected.name}}</h1>
+              <h2 class="text-indigo-400 text-sm">{{member_selected.role}}</h2>
+            </div>
+            <button onclick="addOrUpdateParam('member', '')" class="bg-indigo-600 text-white py-2 text-sm px-3 rounded focus:outline-none">See All</button>
+            <button class="bg-indigo-600 text-white py-2 text-sm px-3 rounded focus:outline-none ml-3">New Task</button>
           </div>
-          <button class="bg-indigo-600 text-white py-2 text-sm px-3 rounded focus:outline-none">New Task</button>
-        </div>
+        {% else %}
+          <div class="p-8 bg-indigo-700 flex items-center">
+            <img src="https://cdn-icons-png.flaticon.com/512/6024/6024190.png" class="w-16 h-16 mr-4 object-top object-cover rounded" />
+            <div class="mr-auto">
+              <h1 class="text-xl leading-none mb-1">All Tasks</h1>
+              <h2 class="text-indigo-400 text-sm">Select a member on the left panel to filter.</h2>
+            </div>
+            <button class="bg-indigo-600 text-white py-2 text-sm px-3 rounded focus:outline-none">New Task</button>
+          </div>
+        {% endif %}
         <div class="p-8 flex flex-1 items-start overflow-auto">
           <div class="flex-shrink-0 text-sm sticky top-0">
-            <div class="flex items-center {% if taskListMode != 0 %} text-indigo-300 {% endif %} mb-3" onclick="taskListMode=0;">To do <span class="italic text-sm ml-1">(8)</span></div>
-            <div class="flex items-center {% if taskListMode != 1 %} text-indigo-300 {% endif %} mb-3" onclick="taskListMode=1;">Blocked <span class="italic text-sm ml-1">(1)</span></div>
-            <div class="flex items-center {% if taskListMode != 2 %} text-indigo-300 {% endif %} mb-3" onclick="taskListMode=2;">In Progress <span class="italic text-sm ml-1">(2)</span></div>
-            <div class="flex items-center {% if taskListMode != 3 %} text-indigo-300 {% endif %}" onclick="taskListMode=3;">Done <span class="italic text-sm ml-1">(4)</span></div>
+            <div class="flex items-center {% if taskStatus != None %} text-indigo-300 {% endif %} mb-3" onclick="addOrUpdateParam('task', '')" style="cursor: pointer;">
+              All <span class="italic text-sm ml-1">({{lenAll}})</span></div>
+            <div class="flex items-center {% if taskStatus != 'todo' %} text-indigo-300 {% endif %} mb-3" onclick="addOrUpdateParam('task', 'todo')" style="cursor: pointer;">
+              Pending <span class="italic text-sm ml-1">({{lenTodo}})</span></div>
+            <div class="flex items-center {% if taskStatus != 'late' %} text-indigo-300 {% endif %} mb-3" onclick="addOrUpdateParam('task', 'late')" style="cursor: pointer;">
+              Late <span class="italic text-sm ml-1">({{lenLate}})</span></div>
+            <div class="flex items-center {% if taskStatus != 'done' %} text-indigo-300 {% endif %} mb-3" onclick="addOrUpdateParam('task', 'done')" style="cursor: pointer;">
+              Done <span class="italic text-sm ml-1">({{lenDone}})</span></div>
           </div>
           <div class="flex-1 pl-10">
             {% for task in tasks %}
