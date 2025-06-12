@@ -109,20 +109,47 @@
           </div>
           <div class="flex-1 pl-10">
             {% for task in tasks %}
-              {% if task.status == taskListMode %}
-              <div class="flex mb-8">
-                <div class="w-4 h-4 flex-shrink-0 rounded-full border-indigo-400 border-2 mt-1 mr-2"></div>
-                <div class="flex-grow">
-                  <h3 class="text-sm mb-1">{{task.title}}</h3>
-                  <h4 class="text-xs text-indigo-300 italic">{{task.description}}</h4>
+              <div class="bg-indigo-500 rounded-lg p-4 mb-4 shadow-lg text-white">
+                <div class="flex items-center mb-3">
+                  {% if task.done %}
+                    <div class="w-4 h-4 flex-shrink-0 rounded-full bg-green-400 border-2 border-green-200 mr-3"></div>
+                    <h3 class="font-bold text-base flex-grow">{{task.title}}</h3>
+                    <span class="text-xs bg-green-500 text-white font-semibold px-2 py-1 rounded-full">Done</span>
+                  {% elif task.deadline < today %}
+                    <div class="w-4 h-4 flex-shrink-0 rounded-full bg-red-400 border-2 border-red-200 mr-3"></div>
+                    <h3 class="font-bold text-base flex-grow">{{task.title}}</h3>
+                    <span class="text-xs bg-red-500 text-white font-semibold px-2 py-1 rounded-full">Late</span>
+                  {% else %}
+                    <div class="w-4 h-4 flex-shrink-0 rounded-full border-indigo-300 border-2 mr-3"></div>
+                    <h3 class="font-bold text-base flex-grow">{{task.title}}</h3>
+                    <span class="text-xs bg-blue-500 text-white font-semibold px-2 py-1 rounded-full">Pending</span>
+                  {% endif %}
+
+                  <button class="text-indigo-200 hover:text-white flex-shrink-0 ml-4">
+                      <svg stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle>
+                      </svg>
+                  </button>
                 </div>
-                <button class="text-indigo-300 flex-shrink-0 ml-2">
-                  <svg stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
-                  </svg>
-                </button>
+
+                <p class="text-sm text-indigo-200 mb-3 ml-7">{{task.description}}</p>
+                <div class="flex items-center text-xs text-indigo-300 ml-7 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                    </svg>
+                    Deadline: {{ task.deadline|date:"d/m/Y" }}
+                </div>
+                
+                <div class="border-t border-indigo-400 pt-3 flex items-center">
+                  <span class="text-xs text-indigo-200 mr-2">Responsible:</span>
+                  <img src="https://cdn-icons-png.freepik.com/512/3626/3626507.png" class="w-6 h-6 object-cover rounded-full" />
+                  <span class="text-sm font-medium text-white ml-2">{{ task.personId.name }}</span>
+                </div>
               </div>
-              {% endif %}
+            {% empty %}
+              <div class="text-center py-10">
+                <p class="text-indigo-200">No tasks found for this filter.</p>
+              </div>
             {% endfor %}
           </div>
         </div>

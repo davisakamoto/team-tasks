@@ -24,30 +24,44 @@ class Manager(View):
         member_id = request.GET.get("member")
         data['task_status'] = request.GET.get("task")
 
-        if member_id:
-            tasks = Task.objects.filter()
-            data['member_selected'] = Person.objects.get(id=member_id)
+        # Primeiro, filtramos por membro, se um for selecionado
+        if member_id and member_id.isdigit():
+            # Este é o queryset base para este membro
+            tasks = Task.objects.filter(personId_id=member_id)
+            try:
+                data['member_selected'] = Person.objects.get(id=member_id)
+            except Person.DoesNotExist:
+                # Caso o ID do membro na URL seja inválido, voltamos para a visão geral
+                tasks = Task.objects.all()
+                data['member_selected'] = None
         else:
+            # Se nenhum membro for selecionado, o queryset base são todas as tarefas
             tasks = Task.objects.all()
+            data['member_selected'] = None
 
 
-        tasksTodo = tasks.filter(done=False)
-        tasksLate = tasks.filter(deadline__lt=today)
+        # Agora, com o queryset base (ou de um membro ou de todos), calculamos os totais
+        tasksTodo = tasks.filter(done=False, deadline__gte=today)
+        tasksLate = tasks.filter(done=False, deadline__lt=today)
         tasksDone = tasks.filter(done=True)
 
-        data['lenAll'] = len(tasks)
-        data['lenTodo'] = len(tasksTodo)
-        data['lenLate'] = len(tasksLate)
-        data['lenDone'] = len(tasksDone)
+        data['lenAll'] = tasks.count()
+        data['lenTodo'] = tasksTodo.count()
+        data['lenLate'] = tasksLate.count()
+        data['lenDone'] = tasksDone.count()
 
+        # E finalmente, filtramos a lista para exibição com base no status selecionado
         if data['task_status'] == 'todo':
-            tasks = tasksTodo
+            tasks_to_display = tasksTodo
         elif data['task_status'] == 'late':
-            tasks = tasksLate
+            tasks_to_display = tasksLate
         elif data['task_status'] == 'done':
-            tasks = tasksDone
+            tasks_to_display = tasksDone
+        else:
+            # "All"
+            tasks_to_display = tasks
 
-        data['tasks'] = tasks
+        data['tasks'] = tasks_to_display.order_by('-deadline') # Ordena as tarefas pela data limite
 
         return data
     
