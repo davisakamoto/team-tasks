@@ -9,28 +9,28 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
-<body class="relative bg-indigo-400 h-screen overflow-hidden">
+<body class="relative bg-indigo-400 h-screen overflow-hidden flex items-center justify-center">
 
-    <div class="h-screen w-screen bg-indigo-400 overflow-hidden absolute flex items-center">
+    <!-- Fundo decorativo (sem alterações) -->
+    <div class="h-screen w-screen bg-indigo-400 overflow-hidden absolute flex items-center -z-10">
         <div class="w-screen h-64 absolute top-0 opacity-50 left-0 -my-40 -mx-64 bg-indigo-300 rounded-full"></div>
         <div class="w-64 h-64 -mx-32 bg-indigo-300 opacity-50 rounded-full"></div>
         <div class="w-64 h-64 ml-auto relative opacity-50 -mr-32 bg-indigo-300 rounded-full"></div>
         <div class="w-screen h-64 absolute opacity-50 bottom-0 right-0 -my-40 -mx-64 bg-indigo-300 rounded-full"></div>
     </div>
 
-    <div class="container mt-5">
-        <div class="card shadow-sm">
-            <div class="flex justify-between card-header bg-primary text-white">
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white">
                 <h4 class="mb-0">
                     {% if edit %}Edit Task{% else %}Create Task{% endif %}
                 </h4>
-                <button type="submit" form="person-form" class="btn btn-light">
-                    New Category
-                </button>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
 
-                <form id="person-form" method="POST">
+                <!-- Formulário principal para CRIAR ou EDITAR a tarefa -->
+                <!-- A action agora aponta para as URLs corretas de Task -->
+                <form id="task-form" method="POST" action="{% if edit %}{% url 'manager:editTask' task_id %}{% else %}{% url 'manager:createTask' %}{% endif %}">
                     {% csrf_token %}
                     {{ form.non_field_errors }}
 
@@ -47,24 +47,29 @@
                     {% endfor %}
                 </form>
 
+                <!-- Formulário de exclusão (só aparece no modo de edição) -->
                 {% if edit %}
-                    <form id="delete-form" method="POST" action="{% url 'manager:deletePerson' person_id %}">
+                    <!-- A action agora aponta para deleteTASK e usa a variável task_id -->
+                    <form id="delete-form" method="POST" action="{% url 'manager:deleteTask' task_id %}">
                         {% csrf_token %}
                     </form>
                 {% endif %}
 
+                <!-- Botões de ação -->
                 <div class="mt-4 d-flex justify-content-between">
                     <div>
-                        <button type="submit" form="person-form" class="btn btn-primary">
-                            {% if edit %}Update{% else %}Save{% endif %}
+                        <!-- O botão de salvar/update agora submete o 'task-form' -->
+                        <button type="submit" form="task-form" class="btn btn-primary">
+                            {% if edit %}Update Task{% else %}Save Task{% endif %}
                         </button>
                         <a href="{% url 'manager:manager' %}" class="btn btn-secondary">Cancel</a>
                     </div>
 
                     {% if edit %}
                         <div>
-                            <button type="submit" form="delete-form" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this person?');">
-                                Delete
+                            <!-- O botão de deletar submete o 'delete-form' -->
+                            <button type="submit" form="delete-form" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this task?');">
+                                Delete Task
                             </button>
                         </div>
                     {% endif %}

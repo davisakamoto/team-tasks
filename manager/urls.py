@@ -10,5 +10,6 @@ urlpatterns = [
     path('member/<int:pk>/delete', views.DeletePerson.as_view(), name="deletePerson"),
     path('task/new', views.CreateTask.as_view(), name="createTask"),
     path('task/<int:pk>/', views.EditTask.as_view(), name="editTask"),
-    path('task/<int:pk>/delete', views.DeleteTask.as_view(), name="deleteTask")
+    path('task/<int:pk>/delete', views.DeleteTask.as_view(), name="deleteTask"),
+    path('task/<int:pk>/toggle-done/', views.ToggleDoneTask.as_view(), name="toggleDone")
 ]

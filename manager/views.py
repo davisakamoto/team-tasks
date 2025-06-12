@@ -62,6 +62,7 @@ class Manager(View):
             tasks_to_display = tasks
 
         data['tasks'] = tasks_to_display.order_by('-deadline') # Ordena as tarefas pela data limite
+        data['today'] = today 
 
         return data
     
@@ -138,6 +139,43 @@ class DeletePerson(View):
         person.delete()
         return redirect('manager:manager')
 
+class ToggleDoneTask(View):
+    def post(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        task.done = not task.done # Inverte o valor booleano
+        task.save()
+        
+        # Redireciona de volta para a URL de onde o usuário veio
+        return redirect(request.META.get('HTTP_REFERER', 'manager:manager'))
+
+
+class EditTask(View):
+    template_name = "manager/task.html" # Certifique-se que o template está correto
+
+    def get(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        form = TaskForm(instance=task)
+        data = {
+            "form": form,
+            "edit": True,
+            "task_id": task.id
+        }
+        return render(request, self.template_name, data)
+
+    def post(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect('manager:manager')
+        
+        # Se o formulário não for válido, renderiza a página novamente com os erros
+        data = {
+            "form": form,
+            "edit": True,
+            "task_id": task.id
+        }
+        return render(request, self.template_name, data)
  
 class CreateTask(View):
     template_name = "manager/task.html"
@@ -156,11 +194,6 @@ class CreateTask(View):
             form.save()
             return redirect('manager:manager')
         return render(request)
-
-    
-class EditTask(View):
-    template_name = "manager/person.html"
-
 
 class DeleteTask(View):
     def post(self, request, pk):
