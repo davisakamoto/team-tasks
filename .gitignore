@@ -5,9 +5,6 @@ __pycache__/
 # Caches e logs do Django
 *.log
 
-# Diretórios de banco de dados SQLite
-*.sqlite3
-
 # Ambiente virtual (virtualenv, venv, pipenv)
 venv/
 env/
