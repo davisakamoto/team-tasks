@@ -18,6 +18,26 @@
     url.searchParams.set(key, value);
     window.location.href = url.toString();
   }
+
+  function toggleMenu(taskId) {
+    const menu = document.getElementById('menu-' + taskId);
+    document.querySelectorAll('[id^="menu-"]').forEach(m => {
+      if (m.id !== menu.id) {
+        m.classList.add('hidden');
+      }
+    });
+    menu.classList.toggle('hidden');
+  }
+
+  window.addEventListener('click', function(e) {
+    if (!e.target.closest('.task-menu-button')) {
+      document.querySelectorAll('[id^="menu-"]').forEach(menu => {
+        if (!menu.classList.contains('hidden')) {
+          menu.classList.add('hidden');
+        }
+      });
+    }
+  });
 </script>
 
 <body class="relative bg-indigo-400 h-screen overflow-hidden">
@@ -168,43 +188,22 @@
 
                 <p class="text-sm text-indigo-200 mb-3 ml-7">{{task.description}}</p>
                 <div class="flex items-center text-xs text-indigo-300 ml-7 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
-                    Deadline: {{ task.deadline|date:"d/m/Y" }}
+                    <i class="fa fa-calendar w-4"></i>
+                    {{ task.deadline|date:"d/m/Y" }}
+                    <i class="fa fa-tag w-4 ml-4" aria-hidden="true"></i>
+                    {{ task.category}}
                 </div>
+                {% if not member_selected %}
                 <div class="border-t border-indigo-400 pt-3 flex items-center">
-                  <span class="text-xs text-indigo-200 mr-2">Responsible:</span>
                   <img src="https://cdn-icons-png.freepik.com/512/3626/3626507.png" class="w-6 h-6 object-cover rounded-full" />
-                  <span class="text-sm font-medium text-white ml-2">{{ task.personId.name }}</span>
+                  <span class="text-sm font-medium text-white ml-2">{{ task.person.name }}</span>
                 </div>
+                {% endif %}
               </div>
             {% empty %}
-              <div class="text-center py-10"><p class="text-indigo-200">No tasks found for this filter.</p></div>
+              <div class="text-center py-10"><p class="text-indigo-200">No tasks found.</p></div>
             {% endfor %}
           </div>
-
-          <script>
-            function toggleMenu(taskId) {
-              const menu = document.getElementById('menu-' + taskId);
-              // Fecha todos os outros menus antes de abrir o novo
-              document.querySelectorAll('[id^="menu-"]').forEach(m => {
-                if (m.id !== menu.id) {
-                  m.classList.add('hidden');
-                }
-              });
-              menu.classList.toggle('hidden');
-            }
-
-            // Fecha o menu se o usuário clicar fora dele
-            window.addEventListener('click', function(e) {
-              if (!e.target.closest('.task-menu-button')) {
-                document.querySelectorAll('[id^="menu-"]').forEach(menu => {
-                  if (!menu.classList.contains('hidden')) {
-                    menu.classList.add('hidden');
-                  }
-                });
-              }
-            });
-          </script>
         </div>
       </div>
     </div>

@@ -24,23 +24,19 @@ class Manager(View):
         member_id = request.GET.get("member")
         data['task_status'] = request.GET.get("task")
 
-        # Primeiro, filtramos por membro, se um for selecionado
+        # Filtro por membro, se um for selecionado
         if member_id and member_id.isdigit():
-            # Este é o queryset base para este membro
-            tasks = Task.objects.filter(personId_id=member_id)
+            tasks = Task.objects.filter(person_id=member_id)
             try:
                 data['member_selected'] = Person.objects.get(id=member_id)
             except Person.DoesNotExist:
-                # Caso o ID do membro na URL seja inválido, voltamos para a visão geral
                 tasks = Task.objects.all()
                 data['member_selected'] = None
         else:
-            # Se nenhum membro for selecionado, o queryset base são todas as tarefas
             tasks = Task.objects.all()
             data['member_selected'] = None
 
-
-        # Agora, com o queryset base (ou de um membro ou de todos), calculamos os totais
+        # Filtros por status e métricas
         tasksTodo = tasks.filter(done=False, deadline__gte=today)
         tasksLate = tasks.filter(done=False, deadline__lt=today)
         tasksDone = tasks.filter(done=True)
@@ -50,7 +46,7 @@ class Manager(View):
         data['lenLate'] = tasksLate.count()
         data['lenDone'] = tasksDone.count()
 
-        # E finalmente, filtramos a lista para exibição com base no status selecionado
+        # Decidindo qual filtro de status utilizar
         if data['task_status'] == 'todo':
             tasks_to_display = tasksTodo
         elif data['task_status'] == 'late':
@@ -58,10 +54,9 @@ class Manager(View):
         elif data['task_status'] == 'done':
             tasks_to_display = tasksDone
         else:
-            # "All"
             tasks_to_display = tasks
 
-        data['tasks'] = tasks_to_display.order_by('-deadline') # Ordena as tarefas pela data limite
+        data['tasks'] = tasks_to_display.order_by('-deadline')
         data['today'] = today 
 
         return data
