@@ -6,29 +6,37 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('manager', '0001_initial'),
+        ("manager", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Person',
+            name="Person",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200)),
-                ('email', models.CharField(blank=True, null=True)),
-                ('role', models.CharField(blank=True, null=True)),
-                ('joinedAt', models.DateField(blank=True, null=True)),
-                ('createdAt', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200)),
+                ("email", models.CharField(blank=True, null=True)),
+                ("role", models.CharField(blank=True, null=True)),
+                ("joinedAt", models.DateField(blank=True, null=True)),
+                ("createdAt", models.DateTimeField(auto_now_add=True)),
             ],
         ),
         migrations.AddField(
-            model_name='task',
-            name='doneAt',
+            model_name="task",
+            name="doneAt",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='task',
-            name='deadline',
+            model_name="task",
+            name="deadline",
             field=models.DateField(blank=True, null=True),
         ),
     ]

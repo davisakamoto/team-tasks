@@ -7,18 +7,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('manager', '0002_person_task_doneat_alter_task_deadline'),
+        ("manager", "0002_person_task_doneat_alter_task_deadline"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='task',
-            old_name='category',
-            new_name='categoryId',
+            model_name="task",
+            old_name="category",
+            new_name="categoryId",
         ),
         migrations.AddField(
-            model_name='task',
-            name='personId',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='manager.person'),
+            model_name="task",
+            name="personId",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="manager.person",
+            ),
         ),
     ]
