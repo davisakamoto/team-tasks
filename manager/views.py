@@ -25,7 +25,6 @@ class Manager(View):
         member_id = request.GET.get("member")
         data["task_status"] = request.GET.get("task")
 
-        # Filtro por membro, se um for selecionado
         if member_id and member_id.isdigit():
             tasks = Task.objects.filter(person_id=member_id)
             try:
@@ -37,7 +36,6 @@ class Manager(View):
             tasks = Task.objects.all()
             data["member_selected"] = None
 
-        # Filtros por status e métricas
         tasksTodo = tasks.filter(done=False, deadline__gte=today)
         tasksLate = tasks.filter(done=False, deadline__lt=today)
         tasksDone = tasks.filter(done=True)
@@ -47,7 +45,6 @@ class Manager(View):
         data["lenLate"] = tasksLate.count()
         data["lenDone"] = tasksDone.count()
 
-        # Decidindo qual filtro de status utilizar
         if data["task_status"] == "todo":
             tasks_to_display = tasksTodo
         elif data["task_status"] == "late":
@@ -86,7 +83,6 @@ class CreatePerson(View):
         if form.is_valid():
             form.save()
             return redirect("manager:manager")
-        # Se o formulário for inválido, renderize a página novamente com o formulário e os erros
         data = {"form": form, "edit": False}
         return render(request, self.template_name, data)
 
@@ -125,15 +121,14 @@ class DeletePerson(View):
 class ToggleDoneTask(View):
     def post(self, request, pk):
         task = get_object_or_404(Task, pk=pk)
-        task.done = not task.done  # Inverte o valor booleano
+        task.done = not task.done
         task.save()
 
-        # Redireciona de volta para a URL de onde o usuário veio
         return redirect(request.META.get("HTTP_REFERER", "manager:manager"))
 
 
 class EditTask(View):
-    template_name = "manager/task.html"  # Certifique-se que o template está correto
+    template_name = "manager/task.html"
 
     def get(self, request, pk):
         task = get_object_or_404(Task, pk=pk)
@@ -148,7 +143,6 @@ class EditTask(View):
             form.save()
             return redirect("manager:manager")
 
-        # Se o formulário não for válido, renderiza a página novamente com os erros
         data = {"form": form, "edit": True, "task_id": task.id}
         return render(request, self.template_name, data)
 
@@ -166,7 +160,6 @@ class CreateTask(View):
         if form.is_valid():
             form.save()
             return redirect("manager:manager")
-        # Se o formulário for inválido, renderize a página novamente com os erros
         data = {"form": form, "edit": False}
         return render(request, self.template_name, data)
 

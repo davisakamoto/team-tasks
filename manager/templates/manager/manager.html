@@ -76,7 +76,6 @@
           </div>
         </div>
 
-        {% comment %} MEMBERS LIST {% endcomment %}
         <div class="overflow-auto flex-grow">
           {% for member in members %}
             <div class="{% if member_selected.id == member.id %} bg-gray-200 {% else %} bg-gray-100 {% endif %} px-8 py-6 flex items-center border-b border-gray-300"
