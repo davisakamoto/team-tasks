@@ -25,6 +25,7 @@ Thumbs.db
 .tox/
 .cache/
 .pytest_cache/
+htmlcov/
 
 # Arquivos temporários do Python
 *.swp

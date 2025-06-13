@@ -91,7 +91,9 @@ class CreatePerson(View):
         if form.is_valid():
             form.save()
             return redirect('manager:manager')
-        return render(request)
+        # Se o formulário for inválido, renderize a página novamente com o formulário e os erros
+        data = {"form": form, "edit": False}
+        return render(request, self.template_name, data)
     
 class EditPerson(View):
     template_name = "manager/person.html"
@@ -188,7 +190,9 @@ class CreateTask(View):
         if form.is_valid():
             form.save()
             return redirect('manager:manager')
-        return render(request)
+        # Se o formulário for inválido, renderize a página novamente com os erros
+        data = {"form": form, "edit": False}
+        return render(request, self.template_name, data)
 
 class DeleteTask(View):
     def post(self, request, pk):
