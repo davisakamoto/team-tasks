@@ -49,7 +49,7 @@ Siga os passos abaixo para configurar e executar o projeto em sua máquina local
 
 1.  **Clone o repositório:**
     ```sh
-    git clone [https://github.com/davisakamoto/team-tasks.git](https://github.com/davisakamoto/team-tasks.git)
+    git clone https://github.com/davisakamoto/team-tasks.git
     cd team-tasks
     ```
 
