@@ -321,7 +321,7 @@ class ViewTests(TestCase):
         response = self.client.post(
             edit_url,
             {
-                "title": "", 
+                "title": "",
                 "person": self.task_pending.person.id,
                 "category": self.task_pending.category.id,
             },
