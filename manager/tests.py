@@ -332,3 +332,97 @@ class ViewTests(TestCase):
 
         self.task_pending.refresh_from_db()
         self.assertEqual(self.task_pending.title, original_title)
+
+    def test_create_member_and_task_then_appear_in_dashboard(self):
+        """Cria um membro, uma tarefa para ele, e verifica se aparece na tela inicial."""
+
+        response = self.client.post(
+            self.create_person_url, {"name": "Lucas Teste", "role": "QA"}
+        )
+        self.assertEqual(response.status_code, 302)
+        person = Person.objects.get(name="Lucas Teste")
+
+        response = self.client.post(
+            self.create_task_url,
+            {
+                "title": "Testar integração",
+                "person": person.id,
+                "category": self.category_dev.id,
+                "deadline": self.today + timedelta(days=2),
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+
+        response = self.client.get(self.manager_url, {"member": person.id})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Testar integração")
+
+    def test_task_created_late_appears_in_late_filter(self):
+        """Cria uma tarefa com prazo vencido e verifica se aparece no filtro 'late'."""
+
+        response = self.client.post(
+            self.create_task_url,
+            {
+                "title": "Tarefa Vencida",
+                "person": self.person1.id,
+                "category": self.category_dev.id,
+                "deadline": self.today - timedelta(days=1),
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+
+        response = self.client.get(self.manager_url, {"task": "late"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Tarefa Vencida")
+
+    def test_toggle_task_status_updates_done_flag(self):
+        """Verifica se o toggle altera corretamente o status da tarefa."""
+
+        task = Task.objects.create(
+            title="Verificar toggle",
+            person=self.person1,
+            category=self.category_dev,
+            done=False,
+        )
+
+        toggle_url = reverse("manager:toggleDone", args=[task.id])
+
+        response = self.client.post(toggle_url)
+        task.refresh_from_db()
+        self.assertTrue(task.done)
+
+        response = self.client.post(toggle_url)
+        task.refresh_from_db()
+        self.assertFalse(task.done)
+
+    def test_status_filter_returns_correct_tasks(self):
+        """Verifica que cada filtro de status retorna apenas as tarefas corretas."""
+
+        response = self.client.get(self.manager_url, {"task": "todo"})
+        self.assertContains(response, self.task_pending.title)
+        self.assertNotContains(response, self.task_late.title)
+        self.assertNotContains(response, self.task_done.title)
+
+        response = self.client.get(self.manager_url, {"task": "late"})
+        self.assertContains(response, self.task_late.title)
+        self.assertNotContains(response, self.task_pending.title)
+
+        response = self.client.get(self.manager_url, {"task": "done"})
+        self.assertContains(response, self.task_done.title)
+        self.assertNotContains(response, self.task_late.title)
+
+    def test_delete_member_keeps_tasks_but_removes_reference(self):
+        """Verifica se, ao deletar um membro, as tarefas continuam no sistema mas sem pessoa associada."""
+
+        task = Task.objects.create(
+            title="Tarefa órfã",
+            person=self.person1,
+            category=self.category_dev,
+        )
+
+        delete_url = reverse("manager:deletePerson", args=[self.person1.id])
+        response = self.client.post(delete_url)
+        self.assertEqual(response.status_code, 302)
+
+        task.refresh_from_db()
+        self.assertIsNone(task.person)
